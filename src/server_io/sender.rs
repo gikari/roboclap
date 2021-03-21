@@ -6,8 +6,7 @@ pub struct Sender {
 
 impl Sender {
     pub fn new(socket: Arc<std::net::UdpSocket>) -> Sender {
-        let sender = Sender { socket };
-        sender
+        Sender { socket }
     }
 
     pub fn init_player(&self) {

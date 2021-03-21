@@ -1,7 +1,6 @@
-// Server I/O module
-
 use std::sync::Arc;
 
+// Server I/O module
 mod receiver;
 mod sender;
 
