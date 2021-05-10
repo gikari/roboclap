@@ -13,9 +13,9 @@ pub fn parse_into_struct(parsed_expr: lexpr::Value) -> Message {
                 "sense_body" => Message::SenseBody(SenseBody::from(parsed_expr)),
                 "see" => Message::See(See::from(parsed_expr)),
                 "hear" => Message::Hear(Hear::from(parsed_expr)),
-                "server_param" => Message::ServerParam(ParamMessage::from(parsed_expr)),
-                "player_param" => Message::PlayerParam(ParamMessage::from(parsed_expr)),
-                "player_type" => Message::PlayerType(ParamMessage::from(parsed_expr)),
+                "server_param" => Message::ServerParam(ParamMessage::from(parsed_expr).unwrap()),
+                "player_param" => Message::PlayerParam(ParamMessage::from(parsed_expr).unwrap()),
+                "player_type" => Message::PlayerType(ParamMessage::from(parsed_expr).unwrap()),
                 "init" => Message::Init(Init::from(parsed_expr)),
                 &_ => panic!("Unknown message {}!", message_name),
             }
