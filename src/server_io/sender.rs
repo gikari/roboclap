@@ -15,10 +15,7 @@ impl Sender {
         // This is a default server address
         let server_address = format!("{}:{}", config.server_address, config.server_port);
 
-        const PROTOCOL_VERSION: i8 = 16;
-        let team_name = "RustTeam";
-
-        let message = format!("(init {} (version {}))", team_name, PROTOCOL_VERSION);
+        let message = format!("(init {} (version {}))", config.team_name, config.server_protocol_version);
         let byte_array = message.as_bytes();
 
         self.socket

@@ -11,6 +11,12 @@ pub struct Config {
 
     #[structopt(short = "p", long, default_value = "6000")]
     server_port: u8,
+
+    #[structopt(long, default_value = "16")]
+    server_protocol_version: u8,
+
+    #[structopt(short = "t", long, default_value = "RustTeam")]
+    team_name: String,
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn std::error::Error>> {
