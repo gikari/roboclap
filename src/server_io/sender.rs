@@ -21,7 +21,9 @@ impl Sender {
         );
         let byte_array = message.as_bytes();
 
-        self.socket.send_to(byte_array, server_address)?;
+        self.socket
+            .send_to(byte_array, server_address)
+            .expect("Cannot send message!");
 
         println!("Message sent!");
     }
