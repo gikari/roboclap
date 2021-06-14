@@ -1,5 +1,7 @@
 use lexpr::Value;
 use std::collections::HashMap;
+use crate::message::{Message, ParsingError};
+use crate::message::ParsingError::UnexpectedSExpr;
 
 pub struct ParamMessage {
     pub map: HashMap<String, Param>,
@@ -12,8 +14,8 @@ pub enum Param {
     String(String),
 }
 
-impl ParamMessage {
-    pub fn from(sexpr: lexpr::Value) -> Result<ParamMessage, &'static str> {
+impl Message for ParamMessage {
+    fn from_sexpr(sexpr: lexpr::Value) -> Result<ParamMessage, ParsingError> {
         // (x_param (p v) (p v) (p v))
 
         let name_cons = sexpr.as_cons().unwrap();
@@ -35,17 +37,17 @@ impl ParamMessage {
                     }
                 }
                 Value::Symbol(value_str) => Param::String(value_str.to_string()),
-                _ => return Err("Unknown param value type"),
+                _ => return Err(UnexpectedSExpr),
             };
 
             param_map.insert(param_name.to_string(), param);
         }
 
-        Ok(ParamMessage {
-            map: param_map,
-        })
+        Ok(ParamMessage { map: param_map })
     }
+}
 
+impl ParamMessage {
     pub fn get_int(&self, key: &str) -> &u64 {
         let value_enum = self.map.get(key).unwrap();
         match value_enum {
@@ -74,19 +76,20 @@ impl ParamMessage {
 #[cfg(test)]
 mod tests {
     use crate::message::param_message::ParamMessage;
+    use crate::message::Message;
 
     #[test]
-    fn from__player_param() {
+    fn from_player_param() {
         test_param_message_with_name("player_param");
     }
 
     #[test]
-    fn from__server_param() {
+    fn from_server_param() {
         test_param_message_with_name("server_param");
     }
 
     #[test]
-    fn from__player_type() {
+    fn from_player_type() {
         test_param_message_with_name("player_type");
     }
 
@@ -105,7 +108,7 @@ mod tests {
         );
         let sexpr = lexpr::from_str(sexpr_str.as_str()).unwrap();
 
-        let param_message = ParamMessage::from(sexpr).unwrap();
+        let param_message: ParamMessage = Message::from_sexpr(sexpr).unwrap();
 
         assert_eq!(param_message.map.len(), 3);
         assert_eq!(param_message.get_int("param1"), &first_param_value);

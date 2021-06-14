@@ -1,3 +1,5 @@
+use crate::message::{Message, ParsingError};
+
 pub struct SenseBody {
     pub time: u8,
     pub view_mode: ViewMode,
@@ -83,25 +85,25 @@ pub struct Foul {
 pub enum Card {
     None,
     Red,
-    Yellow
+    Yellow,
 }
 
-impl SenseBody {
-    pub fn from(sexpr: lexpr::Value) -> SenseBody {
-        SenseBody {
+impl Message for SenseBody {
+    fn from_sexpr(sexpr: lexpr::Value) -> Result<SenseBody, ParsingError> {
+        Ok(SenseBody {
             time: 0,
             view_mode: ViewMode {
                 view_quality: ViewQuality::High,
-                view_width: ViewWidth::Narrow
+                view_width: ViewWidth::Narrow,
             },
             stamina: Stamina {
                 stamina: 0,
                 effort: 0.0,
-                capacity: 0
+                capacity: 0,
             },
             speed: Speed {
                 amount: 0.0,
-                direction: 0.0
+                direction: 0.0,
             },
             head_angle: 0.0,
             kick_count: 0,
@@ -116,29 +118,29 @@ impl SenseBody {
                 movable_cycles: 0,
                 expires_cycles: 0,
                 target: Target {
-                    value: "".to_string()
+                    value: "".to_string(),
                 },
-                count: 0
+                count: 0,
             },
             focus: Focus {
                 target: Target {
-                    value: "".to_string()
+                    value: "".to_string(),
                 },
-                count: 0
+                count: 0,
             },
             tackle: Tackle {
                 expires_cycles: 0,
-                count: 0
+                count: 0,
             },
             collision: Collision {
                 ball: false,
                 player: false,
-                post: false
+                post: false,
             },
             foul: Foul {
                 charged: 0,
-                card: Card::None
-            }
-        }
+                card: Card::None,
+            },
+        })
     }
 }

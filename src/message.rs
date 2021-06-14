@@ -1,10 +1,10 @@
-pub mod sense_body;
-pub mod see;
 pub mod hear;
-pub mod param_message;
 pub mod init;
+pub mod param_message;
+pub mod see;
+pub mod sense_body;
 
-pub enum Message {
+pub enum MessageEnum {
     SenseBody(sense_body::SenseBody),
     See(see::See),
     Hear(hear::Hear),
@@ -12,4 +12,13 @@ pub enum Message {
     ServerParam(param_message::ParamMessage),
     PlayerType(param_message::ParamMessage),
     Init(init::Init),
+}
+
+#[derive(Debug)]
+pub enum ParsingError {
+    UnexpectedSExpr,
+}
+
+pub(crate) trait Message {
+    fn from_sexpr(sexpr: lexpr::Value) -> Result<Self, ParsingError> where Self: Sized;
 }

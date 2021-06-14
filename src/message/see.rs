@@ -1,3 +1,5 @@
+use crate::message::{ParsingError, Message};
+
 pub struct See {
     pub time: u8,
     pub objects: Vec<ObjectInfo>,
@@ -65,11 +67,11 @@ pub enum LineSide {
     Left,
 }
 
-impl See {
-    pub fn from(sexpr: lexpr::Value) -> See {
-        See {
+impl Message for See {
+    fn from_sexpr(sexpr: lexpr::Value) -> Result<See, ParsingError> {
+        Ok(See {
             time: 0,
-            objects: vec![]
-        }
+            objects: vec![],
+        })
     }
 }
