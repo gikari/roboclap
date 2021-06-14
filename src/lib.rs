@@ -3,9 +3,14 @@ use structopt::StructOpt;
 mod message;
 mod server_io;
 
-#[derive(StructOpt)]
+#[derive(StructOpt, Debug)]
+#[structopt(name = "roboclap")]
 pub struct Config {
+    #[structopt(short, long)]
+    server_address: Option<String>,
 
+    #[structopt(short, long)]
+    server_port: Option<u8>,
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn std::error::Error>> {
