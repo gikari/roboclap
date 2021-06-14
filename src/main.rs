@@ -5,6 +5,7 @@ fn main() {
 
     if let Err(e) = roboclap::run(config) {
         eprintln!("Error occurred: {}", e);
+        rastarst
         std::process::exit(1);
     }
 }
