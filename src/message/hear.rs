@@ -1,7 +1,9 @@
-use crate::message::{ParsingError, Message};
-use crate::message::ParsingError::UnexpectedSExpr;
-use lexpr::Value;
 use std::borrow::Borrow;
+
+use lexpr::Value;
+
+use crate::message::ParsingError::UnexpectedSExpr;
+use crate::message::{Message, ParsingError};
 
 pub struct Hear {
     time: u8,
@@ -36,7 +38,7 @@ impl Message for Hear {
             .ok_or(UnexpectedSExpr)? as u8;
 
         let second_item = it.next().ok_or(UnexpectedSExpr)?;
-        let mut direction:Option<f64> = None;
+        let mut direction: Option<f64> = None;
         let mut sender = Sender::Other;
         match second_item {
             Value::Number(_direction) => {
@@ -52,13 +54,12 @@ impl Message for Hear {
                     _ => Sender::Other,
                 }
             }
-            _ => return Err(UnexpectedSExpr)
+            _ => return Err(UnexpectedSExpr),
         }
 
         if direction.is_some() {
             todo!("Parse with ")
         } else {
-
         }
 
         Ok(Hear {
@@ -105,7 +106,7 @@ mod tests {
         let sexpr_str = "(hear 10 42 sample_text)";
         let sexpr = lexpr::from_str(sexpr_str).unwrap();
 
-        let hear_message : Hear = Message::from_sexpr(sexpr).unwrap();
+        let hear_message: Hear = Message::from_sexpr(sexpr).unwrap();
 
         assert_eq!(hear_message.time, 10);
         assert_eq!(hear_message.sender, Sender::Other);
@@ -119,7 +120,7 @@ mod tests {
         let sexpr_str = "(hear 10 42 our 1 sample_text)";
         let sexpr = lexpr::from_str(sexpr_str).unwrap();
 
-        let hear_message : Hear = Message::from_sexpr(sexpr).unwrap();
+        let hear_message: Hear = Message::from_sexpr(sexpr).unwrap();
 
         assert_eq!(hear_message.time, 10);
         assert_eq!(hear_message.sender, Sender::Other);
@@ -134,7 +135,7 @@ mod tests {
         let sexpr_str = "(hear Time Dir our Message)";
         let sexpr = lexpr::from_str(sexpr_str).unwrap();
 
-        let hear_message : Hear = Message::from_sexpr(sexpr).unwrap();
+        let hear_message: Hear = Message::from_sexpr(sexpr).unwrap();
 
         assert_eq!(hear_message.time, 10);
         assert_eq!(hear_message.sender, Sender::Other);

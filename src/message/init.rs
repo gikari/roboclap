@@ -50,7 +50,7 @@ mod tests {
         let sexpr_str = "(init l 2 before_kick_off)";
         let sexpr = lexpr::from_str(sexpr_str).unwrap();
 
-        let init_message:Init = Message::from_sexpr(sexpr).unwrap();
+        let init_message: Init = Message::from_sexpr(sexpr).unwrap();
 
         assert_eq!(init_message.side, Side::Left);
         assert_eq!(init_message.player_number, 2);

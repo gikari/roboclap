@@ -12,8 +12,7 @@ pub struct ThreadsPack {
 pub fn init_threads(config: crate::Config) -> Result<ThreadsPack, Box<dyn std::error::Error>> {
     println!("Initializing threads...");
 
-    let socket_for_sender =
-        Arc::new(std::net::UdpSocket::bind("0.0.0.0:0")?);
+    let socket_for_sender = Arc::new(std::net::UdpSocket::bind("0.0.0.0:0")?);
     let socket_for_receiver = socket_for_sender.clone();
 
     let config_for_sender = config.clone();

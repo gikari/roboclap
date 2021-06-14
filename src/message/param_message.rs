@@ -1,7 +1,9 @@
-use lexpr::Value;
 use std::collections::HashMap;
-use crate::message::{Message, ParsingError};
+
+use lexpr::Value;
+
 use crate::message::ParsingError::UnexpectedSExpr;
+use crate::message::{Message, ParsingError};
 
 pub struct ParamMessage {
     pub map: HashMap<String, Param>,

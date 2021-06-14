@@ -1,4 +1,4 @@
-use crate::message::{ParsingError, Message};
+use crate::message::{Message, ParsingError};
 
 pub struct See {
     pub time: u8,

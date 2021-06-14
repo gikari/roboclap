@@ -20,5 +20,7 @@ pub enum ParsingError {
 }
 
 pub(crate) trait Message {
-    fn from_sexpr(sexpr: lexpr::Value) -> Result<Self, ParsingError> where Self: Sized;
+    fn from_sexpr(sexpr: lexpr::Value) -> Result<Self, ParsingError>
+    where
+        Self: Sized;
 }
