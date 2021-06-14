@@ -5,7 +5,6 @@ fn main() {
 
     if let Err(e) = roboclap::run(config) {
         eprintln!("Error occurred: {}", e);
-        let a;
         std::process::exit(1);
     }
 }
