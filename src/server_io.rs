@@ -9,21 +9,23 @@ pub struct ThreadsPack {
     pub sender_thread: std::thread::JoinHandle<()>,
 }
 
-pub fn init_threads() -> ThreadsPack {
+pub fn init_threads(config: crate::Config) -> Result<ThreadsPack, Box<dyn std::error::Error>> {
     println!("Initializing threads...");
 
     let socket_for_sender =
-        Arc::new(std::net::UdpSocket::bind("0.0.0.0:0").expect("Could not bind to the address!"));
+        Arc::new(std::net::UdpSocket::bind("0.0.0.0:0")?);
     let socket_for_receiver = socket_for_sender.clone();
 
-    ThreadsPack {
+    let config_for_sender = config.clone();
+
+    Ok(ThreadsPack {
         receiver_thread: std::thread::spawn(move || {
             let receiver = receiver::Receiver::new(socket_for_receiver);
             receiver.start_message_loop();
         }),
         sender_thread: std::thread::spawn(move || {
             let sender = sender::Sender::new(socket_for_sender);
-            sender.init_player();
+            sender.init_player(&config_for_sender);
         }),
-    }
+    })
 }

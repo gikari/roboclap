@@ -9,11 +9,11 @@ impl Sender {
         Sender { socket }
     }
 
-    pub fn init_player(&self) {
+    pub fn init_player(&self, config: &crate::Config) {
         println!("Outbox thread is sending data...");
 
         // This is a default server address
-        let server_address = "127.0.0.1:6000";
+        let server_address = format!("{}:{}", config.server_address, config.server_port);
 
         const PROTOCOL_VERSION: i8 = 16;
         let team_name = "RustTeam";

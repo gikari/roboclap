@@ -3,19 +3,21 @@ use structopt::StructOpt;
 mod message;
 mod server_io;
 
-#[derive(StructOpt, Debug)]
+#[derive(StructOpt, Debug, Clone)]
 #[structopt(name = "roboclap")]
 pub struct Config {
-    #[structopt(short, long)]
-    server_address: Option<String>,
+    #[structopt(short = "a", long, default_value = "127.0.0.1")]
+    server_address: String,
 
-    #[structopt(short, long)]
-    server_port: Option<u8>,
+    #[structopt(short = "p", long, default_value = "6000")]
+    server_port: u8,
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn std::error::Error>> {
+    let config_for_io_threads = config.clone();
+
     // Create Server I/O threads
-    let server_io_threads = server_io::init_threads();
+    let server_io_threads = server_io::init_threads(config_for_io_threads)?;
 
     // TODO: Create thinking thread
 
