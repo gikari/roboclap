@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
-pub struct Receiver {
+pub struct Sensor {
     socket: Arc<std::net::UdpSocket>,
 }
 
-impl Receiver {
-    pub fn new(socket: Arc<std::net::UdpSocket>) -> Receiver {
-        Receiver { socket }
+impl Sensor {
+    pub fn new(socket: Arc<std::net::UdpSocket>) -> Self {
+        Self { socket }
     }
 
     pub fn start_message_loop(&self) {
