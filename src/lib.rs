@@ -9,7 +9,7 @@ pub struct Config {
     server_address: String,
 
     #[structopt(short = "p", long, default_value = "6000")]
-    server_port: u8,
+    server_port: u16,
 
     #[structopt(long, default_value = "16")]
     server_protocol_version: u8,
