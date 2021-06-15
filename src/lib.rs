@@ -2,8 +2,8 @@ use std::sync::Arc;
 
 use structopt::StructOpt;
 
-mod receiver;
-mod sender;
+mod commander;
+mod sensor;
 
 #[derive(StructOpt, Debug, Clone)]
 #[structopt(name = "roboclap")]
@@ -43,15 +43,17 @@ fn init_main_threads(config: Config) -> Result<ThreadsPack, Box<dyn std::error::
 
     let config_for_sender = config;
 
-    Ok(ThreadsPack {
+    let threads = ThreadsPack {
         receiver_thread: std::thread::spawn(move || {
-            let receiver = receiver::Receiver::new(socket_for_receiver);
+            let receiver = sensor::Sensor::new(socket_for_receiver);
             receiver.start_message_loop();
         }),
         sender_thread: std::thread::spawn(move || {
-            let sender = sender::Sender::new(socket_for_sender);
+            let sender = commander::Commander::new(socket_for_sender);
             sender.init_player(&config_for_sender);
         }),
         thinking_thread: std::thread::spawn(move || {}),
-    })
+    };
+
+    Ok(threads)
 }

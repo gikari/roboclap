@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
-pub struct Sender {
+pub struct Commander {
     socket: Arc<std::net::UdpSocket>,
 }
 
-impl Sender {
-    pub fn new(socket: Arc<std::net::UdpSocket>) -> Sender {
-        Sender { socket }
+impl Commander {
+    pub fn new(socket: Arc<std::net::UdpSocket>) -> Self {
+        Self { socket }
     }
 
     pub fn init_player(&self, config: &crate::Config) {
