@@ -19,7 +19,7 @@ pub struct Config {
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn std::error::Error>> {
-    let config_for_io_threads = config.clone();
+    let config_for_io_threads = config;
 
     // Create Server I/O threads
     let server_io_threads = server_io::init_threads(config_for_io_threads)?;
