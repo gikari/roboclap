@@ -1,6 +1,9 @@
+use std::sync::Arc;
+
 use structopt::StructOpt;
 
-mod server_io;
+mod receiver;
+mod sender;
 
 #[derive(StructOpt, Debug, Clone)]
 #[structopt(name = "roboclap")]
@@ -18,16 +21,37 @@ pub struct Config {
     team_name: String,
 }
 
+pub struct ThreadsPack {
+    pub receiver_thread: std::thread::JoinHandle<()>,
+    pub sender_thread: std::thread::JoinHandle<()>,
+    pub thinking_thread: std::thread::JoinHandle<()>,
+}
+
 pub fn run(config: Config) -> Result<(), Box<dyn std::error::Error>> {
-    let config_for_io_threads = config;
+    let threads_pack = init_main_threads(config)?;
 
-    // Create Server I/O threads
-    let server_io_threads = server_io::init_threads(config_for_io_threads)?;
-
-    // TODO: Create thinking thread
-
-    server_io_threads.sender_thread.join().unwrap();
-    server_io_threads.receiver_thread.join().unwrap();
+    threads_pack.receiver_thread.join().unwrap();
+    threads_pack.sender_thread.join().unwrap();
+    threads_pack.thinking_thread.join().unwrap();
 
     Ok(())
+}
+
+fn init_main_threads(config: Config) -> Result<ThreadsPack, Box<dyn std::error::Error>> {
+    let socket_for_sender = Arc::new(std::net::UdpSocket::bind("0.0.0.0:0")?);
+    let socket_for_receiver = socket_for_sender.clone();
+
+    let config_for_sender = config;
+
+    Ok(ThreadsPack {
+        receiver_thread: std::thread::spawn(move || {
+            let receiver = receiver::Receiver::new(socket_for_receiver);
+            receiver.start_message_loop();
+        }),
+        sender_thread: std::thread::spawn(move || {
+            let sender = sender::Sender::new(socket_for_sender);
+            sender.init_player(&config_for_sender);
+        }),
+        thinking_thread: std::thread::spawn(move || {}),
+    })
 }
