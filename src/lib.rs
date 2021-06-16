@@ -3,6 +3,7 @@ use std::sync::Arc;
 use structopt::StructOpt;
 
 mod commander;
+mod message;
 mod sensor;
 
 #[derive(StructOpt, Debug, Clone)]
