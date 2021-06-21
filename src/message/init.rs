@@ -1,5 +1,7 @@
+use std::convert::TryFrom;
+
+use crate::message::ParsingError;
 use crate::message::ParsingError::BadSExpr;
-use crate::message::{Message, ParsingError};
 
 pub struct Init {
     pub side: Side,
@@ -13,8 +15,10 @@ pub enum Side {
     Right,
 }
 
-impl Message for Init {
-    fn from_sexpr(sexpr: lexpr::Value) -> Result<Init, ParsingError> {
+impl TryFrom<lexpr::Value> for Init {
+    type Error = ParsingError;
+
+    fn try_from(sexpr: lexpr::Value) -> Result<Self, Self::Error> {
         // "(init (l (2 (before_kick_off))))"
         let name_cons = sexpr.as_cons().ok_or(BadSExpr)?;
         let side_cons = name_cons.cdr().as_cons().ok_or(BadSExpr)?;
@@ -43,15 +47,16 @@ impl Message for Init {
 
 #[cfg(test)]
 mod tests {
+    use std::convert::TryFrom;
+
     use crate::message::init::{Init, Side};
-    use crate::message::Message;
 
     #[test]
     fn from_sexpr() {
         let sexpr_str = "(init l 2 before_kick_off)";
         let sexpr = lexpr::from_str(sexpr_str).unwrap();
 
-        let init_message: Init = Message::from_sexpr(sexpr).unwrap();
+        let init_message = Init::try_from(sexpr).unwrap();
 
         assert_eq!(init_message.side, Side::Left);
         assert_eq!(init_message.player_number, 2);

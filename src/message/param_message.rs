@@ -1,9 +1,10 @@
 use std::collections::HashMap;
+use std::convert::TryFrom;
 
 use lexpr::Value;
 
+use crate::message::ParsingError;
 use crate::message::ParsingError::BadSExpr;
-use crate::message::{Message, ParsingError};
 
 pub struct ParamMessage {
     pub map: HashMap<String, Param>,
@@ -16,8 +17,10 @@ pub enum Param {
     String(String),
 }
 
-impl Message for ParamMessage {
-    fn from_sexpr(sexpr: lexpr::Value) -> Result<ParamMessage, ParsingError> {
+impl TryFrom<lexpr::Value> for ParamMessage {
+    type Error = ParsingError;
+
+    fn try_from(sexpr: lexpr::Value) -> Result<Self, Self::Error> {
         // (x_param (p v) (p v) (p v))
 
         let name_cons = sexpr.as_cons().unwrap();
@@ -80,10 +83,11 @@ impl ParamMessage {
 
 #[cfg(test)]
 mod tests {
+    use std::convert::TryFrom;
+
     use approx::assert_relative_eq;
 
     use crate::message::param_message::ParamMessage;
-    use crate::message::Message;
 
     #[test]
     fn from_player_param() {
@@ -115,7 +119,7 @@ mod tests {
         );
         let sexpr = lexpr::from_str(sexpr_str.as_str()).unwrap();
 
-        let param_message: ParamMessage = Message::from_sexpr(sexpr).unwrap();
+        let param_message = ParamMessage::try_from(sexpr).unwrap();
 
         assert_eq!(param_message.map.len(), 3);
         assert_eq!(param_message.get_int("param1"), &first_param_value);
