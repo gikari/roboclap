@@ -1,3 +1,5 @@
+use thiserror::Error;
+
 pub mod init;
 pub mod param_message;
 
@@ -9,13 +11,8 @@ pub enum ServerMessage {
     ServerParam(param_message::ParamMessage),
 }
 
-#[derive(Debug)]
+#[derive(Error, Debug)]
 pub enum ParsingError {
+    #[error("S-Expression structure is unexpected")]
     BadSExpr,
-}
-
-pub trait Message {
-    fn from_sexpr(sexpr: lexpr::Value) -> Result<Self, ParsingError>
-    where
-        Self: Sized;
 }
