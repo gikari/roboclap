@@ -28,7 +28,7 @@ pub struct ThreadsPack {
     pub thinking_thread: std::thread::JoinHandle<()>,
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run(config: Config) -> anyhow::Result<()> {
     let threads_pack = init_main_threads(config)?;
 
     threads_pack.receiver_thread.join().unwrap();
@@ -38,7 +38,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn init_main_threads(config: Config) -> Result<ThreadsPack, Box<dyn std::error::Error>> {
+fn init_main_threads(config: Config) -> anyhow::Result<ThreadsPack> {
     let socket_for_sender = Arc::new(std::net::UdpSocket::bind("0.0.0.0:0")?);
     let socket_for_receiver = socket_for_sender.clone();
 
